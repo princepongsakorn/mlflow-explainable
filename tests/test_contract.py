@@ -203,6 +203,36 @@ def test_autodetect_skips_xgboost():
 
 
 # ---------------------------------------------------------------------------
+# String-valued input (JSON dataframe_split / CSV round-trips)
+# ---------------------------------------------------------------------------
+def test_string_valued_input_is_coerced(tmp_mlflow_tracking_uri, toy_dataset):
+    """Clients send tabular values as strings over JSON. Both predict() and
+    shap_explain() must coerce to numeric rather than failing on object dtype.
+    """
+    X, y = toy_dataset
+    model = RandomForestClassifier(n_estimators=10, random_state=0).fit(X, y)
+
+    with mlflow.start_run() as run:
+        log_explainable_model(model, X, registered_name="test-strinput")
+        run_id = run.info.run_id
+
+    loaded = mlflow.pyfunc.load_model(f"runs:/{run_id}/model")
+    impl = loaded._model_impl.python_model
+
+    # Same rows, but every value is a string — as a JSON payload would arrive.
+    X_str = X.head(3).astype(str)
+    assert (X_str.dtypes == object).all()
+
+    out = impl.predict(None, X_str)
+    assert list(out.columns) == ["Y_proba", "Y_class"]
+    assert not out["Y_proba"].isna().any()
+
+    exp = impl.shap_explain(X_str)
+    assert exp["values"].shape[0] == 3
+    assert exp["values"].shape[1] == X.shape[1]
+
+
+# ---------------------------------------------------------------------------
 # registered_name safety net
 # ---------------------------------------------------------------------------
 def test_registered_name_auto_derived_from_experiment(

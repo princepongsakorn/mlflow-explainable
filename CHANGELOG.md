@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.1
+
+- **FIX** ``_AutoExplainableModel`` now coerces its input to numeric before
+  use. Clients commonly send tabular values as strings (JSON dataframe_split
+  payloads, CSV round-trips); ``predict`` often tolerated this but
+  ``shap_explain`` failed because SHAP maskers do arithmetic on the raw
+  DataFrame and raise on object dtype.
+
 ## 1.0.0
 
 Major redesign. Successor to ``mlflow-shap``.
