@@ -132,11 +132,18 @@ class _AutoExplainableModel(ExplainableModel):
     # ---- helpers -----------------------------------------------------------
     def _as_dataframe(self, X) -> pd.DataFrame:
         if isinstance(X, pd.DataFrame):
-            return X
-        arr = np.asarray(X)
-        if arr.ndim == 1:
-            arr = arr.reshape(1, -1)
-        return pd.DataFrame(arr, columns=self._feature_names)
+            df = X
+        else:
+            arr = np.asarray(X)
+            if arr.ndim == 1:
+                arr = arr.reshape(1, -1)
+            df = pd.DataFrame(arr, columns=self._feature_names)
+        # Coerce to numeric. Clients routinely send tabular values as strings
+        # (JSON dataframe_split payloads, CSV round-trips). A model's own
+        # predict path may tolerate object dtype, but SHAP maskers do
+        # arithmetic on the raw frame and raise on strings. Coercing here
+        # keeps both predict() and shap_explain() safe.
+        return df.apply(pd.to_numeric, errors="coerce")
 
     def _proba(self, X_df: pd.DataFrame) -> np.ndarray:
         p = self._predictor.predict_proba(X_df) if hasattr(self._predictor, "predict_proba") \
