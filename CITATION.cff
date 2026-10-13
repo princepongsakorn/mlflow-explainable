@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "mlflow-explainable"
+abstract: >-
+  mlflow-explainable logs a trained model and its SHAP explainer to MLflow as
+  one self-contained pyfunc artifact with two methods, predict and
+  shap_explain, so a serving runtime can explain any model without knowing
+  which framework produced it.
+type: software
+authors:
+  - family-names: Pongsutiyakorn
+    given-names: Pongsakorn
+license: MIT
+repository-code: "https://github.com/princepongsakorn/mlflow-explainable"
+url: "https://pypi.org/project/mlflow-explainable/"
+version: 1.0.2
+doi: 10.5281/zenodo.23347148
+date-released: "2026-10-13"
+keywords:
+  - MLflow
+  - SHAP
+  - explainable AI
+  - model serving

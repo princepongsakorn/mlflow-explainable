@@ -1,5 +1,7 @@
 # mlflow-explainable
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23347148.svg)](https://doi.org/10.5281/zenodo.23347148)
+
 Log explainable ML models (predictor + SHAP explainer) to MLflow as a single
 self-contained `mlflow.pyfunc` artifact. Designed for a multi-model serving
 runtime that should not need to know whether the underlying model is a sklearn
@@ -111,6 +113,14 @@ break when the SHAP version changes.
 `mlflow-explainable` standardises the runtime-facing surface to two methods —
 `predict` and `shap_explain` — and pushes all framework-specific glue into the
 artifact itself.
+
+## Citation
+
+To cite mlflow-explainable, use its Zenodo DOI:
+[10.5281/zenodo.23347149](https://doi.org/10.5281/zenodo.23347149) for 1.0.2, or
+[10.5281/zenodo.23347148](https://doi.org/10.5281/zenodo.23347148) for every version.
+[`CITATION.cff`](CITATION.cff) has the same details, and GitHub offers them under
+"Cite this repository".
 
 ## License
 
