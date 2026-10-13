@@ -11,13 +11,19 @@ import pytest
 
 @pytest.fixture()
 def tmp_mlflow_tracking_uri():
-    """Point MLflow at a fresh temp directory for the duration of the test."""
+    """Point MLflow at a fresh SQLite store in a temp directory for the test.
+
+    Recent MLflow releases refuse new runs on the plain file store, so the
+    tracking data goes to SQLite and the artifacts to a folder beside it.
+    """
     with tempfile.TemporaryDirectory() as tmp:
-        uri = f"file://{os.path.abspath(tmp)}"
+        root = os.path.abspath(tmp)
+        uri = f"sqlite:///{os.path.join(root, 'mlflow.db')}"
         prev = mlflow.get_tracking_uri()
         mlflow.set_tracking_uri(uri)
-        # File-store backend doesn't auto-create the Default experiment;
-        # do it explicitly so start_run() works.
+        mlflow.create_experiment(
+            "test", artifact_location=f"file://{os.path.join(root, 'artifacts')}"
+        )
         mlflow.set_experiment("test")
         try:
             yield uri
