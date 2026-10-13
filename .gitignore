@@ -35,9 +35,3 @@ htmlcov/
 
 # OS
 .DS_Store
-# Virtual environments
-.venv/
-venv/
-env/
-ENV/
-.env

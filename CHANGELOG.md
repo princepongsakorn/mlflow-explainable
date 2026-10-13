@@ -1,12 +1,17 @@
 # Changelog
 
-## 1.0.1
+## 1.0.2
 
 - **FIX** ``_AutoExplainableModel`` now coerces its input to numeric before
   use. Clients commonly send tabular values as strings (JSON dataframe_split
   payloads, CSV round-trips); ``predict`` often tolerated this but
   ``shap_explain`` failed because SHAP maskers do arithmetic on the raw
   DataFrame and raise on object dtype.
+
+## 1.0.1
+
+Tagged on GitHub without a version bump, so it was never published to PyPI.
+Its contents are those of 1.0.0.
 
 ## 1.0.0
 

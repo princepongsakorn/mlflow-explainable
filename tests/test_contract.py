@@ -17,7 +17,6 @@ from sklearn.ensemble import RandomForestClassifier
 
 from mlflow_explainable import (
     ExplainableModel,
-    ExplainableModelError,
     NoActiveRunError,
     log_explainable_model,
 )
@@ -110,8 +109,9 @@ def test_autodetect_detects_user_class(tmp_path):
 # ---------------------------------------------------------------------------
 def test_pickle_roundtrip_self_test_passes_for_rf(toy_dataset):
     """Sklearn RF + TreeExplainer must survive a cloudpickle roundtrip."""
-    from mlflow_explainable.contract import _AutoExplainableModel
     import shap
+
+    from mlflow_explainable.contract import _AutoExplainableModel
 
     X, y = toy_dataset
     rf = RandomForestClassifier(n_estimators=5, random_state=0).fit(X, y)
@@ -221,7 +221,7 @@ def test_string_valued_input_is_coerced(tmp_mlflow_tracking_uri, toy_dataset):
 
     # Same rows, but every value is a string — as a JSON payload would arrive.
     X_str = X.head(3).astype(str)
-    assert (X_str.dtypes == object).all()
+    assert all(pd.api.types.is_string_dtype(dtype) for dtype in X_str.dtypes)
 
     out = impl.predict(None, X_str)
     assert list(out.columns) == ["Y_proba", "Y_class"]
